@@ -42,6 +42,7 @@ const STOP_LOSS_BPS = 200;
 const MAX_HOLD_BARS = 120;
 /** Top-up only while the position's gain is below this (still in the dip). */
 const TOPUP_MAX_GAIN_BPS = 100;
+const MAX_SLIPPAGE_BPS = 100;
 
 const closes: number[] = [];
 let heldBars = 0;
