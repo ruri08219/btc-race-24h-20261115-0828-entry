@@ -7,7 +7,10 @@
 //
 //   - Tier 1: close > 100 bps below the 60-bar SMA -> buy 40% of cash.
 //   - Tier 2: still holding and close > 150 bps below the 60-bar SMA
-//     -> top up with all remaining cash (one position, max weight 100%).
+//     -> top up with all remaining cash (one position, max weight 100%),
+//     but only while the position is still in the dip zone (gain below
+//     +100 bps): never add to a position that already bounced, so a
+//     top-up cannot buy strength at a high price.
 //   - Exit the whole position: gain >= +400 bps, or gain <= -200 bps,
 //     or held >= 120 bars (whichever comes first).
 //
@@ -37,7 +40,8 @@ const TAKE_PROFIT_BPS = 400;
 const STOP_LOSS_BPS = 200;
 /** Time cap: exit after this many bars held. */
 const MAX_HOLD_BARS = 120;
-const MAX_SLIPPAGE_BPS = 100;
+/** Top-up only while the position's gain is below this (still in the dip). */
+const TOPUP_MAX_GAIN_BPS = 100;
 
 const closes: number[] = [];
 let heldBars = 0;
@@ -85,8 +89,9 @@ await runBars({
         orders.push({ side: 'sell', symbol, qty: held.qty, max_slippage_bps: MAX_SLIPPAGE_BPS });
         return orders;
       }
-      // Deepening dip: top up with all remaining cash.
-      if (zBps < -TIER2_BPS && state.cash >= BigInt(state.hello.fees.min_notional_quote_units)) {
+      // Deepening dip: top up with all remaining cash, only while the
+      // position is still in the dip zone (gain below +100 bps).
+      if (gain !== null && gain < TOPUP_MAX_GAIN_BPS && zBps < -TIER2_BPS && state.cash >= BigInt(state.hello.fees.min_notional_quote_units)) {
         const room = state.weightRoom(symbol);
         let notional = state.cash < room ? state.cash : room;
         if (notional >= BigInt(state.hello.fees.min_notional_quote_units)) {
