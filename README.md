@@ -16,7 +16,7 @@ The dev window falls ~4% top to bottom, so buy-and-hold and trend-following both
 
 On the frozen dev window the deep dips (hours 13 and 16–17) bounce 250–400+ bps, far above the ~20 bps round-trip cost of a small trade, while the time cap cuts a position loose before the next leg down. Sizing respects pool impact: a $1,000 trade meets ~15 bps of impact per side, a $400 trade ~6 bps, so the first tier stays small and only the confirmed deep dip takes the full size.
 
-Local dev-grade (kit harness, `makefun grade-local --driver process`): **net PnL +$38.34, 10 trades, max drawdown 1.7%** — above the $0 dev gate with margin.
+Local dev-grade (kit harness, `makefun grade-local --driver process`): **net PnL +$33.55, 10 trades, win rate 75%, max drawdown 2.1%** — above the $0 dev gate with margin.
 
 ## Files
 
